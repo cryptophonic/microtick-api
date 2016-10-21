@@ -479,7 +479,7 @@ Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
                 msg: "Contract matched"
             });
         } else {
-            fail(err.message);
+            if (fail != null) fail(err.message);
         }
     });
 };
@@ -494,7 +494,7 @@ Contract.prototype.tradeEnd = function(success, fail) {
                 msg: "Trade ended"
             });
         } else {
-            fail(err.message);
+            if (fail != null) fail(err.message);
         }
     });
 };
@@ -509,7 +509,7 @@ Contract.prototype.cancel = function(success, fail) {
                 msg: "Contract canceled"
             });
         } else {
-            fail(err.message);
+            if (fail != null) fail(err.message);
         }
     });
 };
@@ -760,7 +760,7 @@ API.prototype.createAccount = function(success, fail) {
             });
         } else {
             console.log(err.message);
-            fail(err.message);
+            if (fail != null) fail(err.message);
         }
     }); 
 };
@@ -800,7 +800,7 @@ API.prototype.deposit = function(amount, success, fail) {
                 msg: "Deposit sent"
             });
         } else {
-            fail(err.message);
+            if (fail != null) fail(err.message);
         }
     });
 };
@@ -1095,7 +1095,7 @@ API.prototype.createContract = function(name, price, dur, vol, success, fail) {
                 msg: "Contract created"
             });
         } else {
-            fail(err.message);
+            if (fail != null) fail(err.message);
         }
     });
 };
