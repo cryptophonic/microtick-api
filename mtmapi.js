@@ -470,7 +470,7 @@ Contract.prototype.unrealizedCommission = function(cb) {
 };
 
 Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
-    this.contract.tradeMatch(callput, globals.web3.toWei(globals.LONG_AMOUNT), longshort, {gas: 1250000}, function(err, res) {
+    this.contract.tradeMatch(callput, globals.web3.toWei(globals.LONG_AMOUNT), longshort, {gas: 750000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
@@ -485,7 +485,7 @@ Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
 };
 
 Contract.prototype.tradeEnd = function(success, fail) {
-    this.contract.tradeEnd({gas: 2000000}, function(err, res) {
+    this.contract.tradeEnd({gas: 200000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
@@ -500,7 +500,7 @@ Contract.prototype.tradeEnd = function(success, fail) {
 };
 
 Contract.prototype.cancel = function(success, fail) {
-    this.contract.cancel({gas: 2000000}, function(err, res) {
+    this.contract.cancel({gas: 200000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
