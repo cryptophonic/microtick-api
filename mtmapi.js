@@ -1193,12 +1193,15 @@ API.prototype.getUnrealizedCommission = function(name, ctr, cb) {
 };
 
 API.prototype.getTradeContractList = function(cb) {
-    if (cb == null) sync_msg();
-    this.api.getTradeContracts(function(err, res) {
-        if (!err) {
-            cb(new ContractList(res));
-        }
-    });
+    if (cb == null) {
+        return new ContractList(this.api.getTradeContracts());
+    } else {
+        this.api.getTradeContracts(function(err, res) {
+            if (!err) {
+                cb(new ContractList(res));
+            }
+        });
+    }
 };
 
 API.prototype.onTransaction = function(cb) {
