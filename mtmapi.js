@@ -485,7 +485,7 @@ Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
 };
 
 Contract.prototype.tradeEnd = function(success, fail) {
-    this.contract.tradeEnd({gas: 200000}, function(err, res) {
+    this.contract.tradeEnd({gas: 1500000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
