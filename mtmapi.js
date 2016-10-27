@@ -485,7 +485,7 @@ Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
 };
 
 Contract.prototype.tradeEnd = function(success, fail) {
-    this.contract.tradeEnd({gas: 1500000}, function(err, res) {
+    this.contract.tradeEnd({gas: 2000000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
@@ -1264,7 +1264,7 @@ API.prototype.onNewBlock = function(cb) {
 API.prototype.blackscholes = blackscholes;
 
 API.prototype.setWebAuth = function(str, success, fail) {
-    return this.webauth.set(globals.web3.sha3(str), function(err, res) {
+    return this.webauth.set(globals.web3.sha3(str), {gas: 500000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
