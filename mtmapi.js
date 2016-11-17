@@ -1176,12 +1176,15 @@ API.prototype.getMarketContractList = function(name, cb) {
 };
 
 API.prototype.getMarketSpot = function(name, cb) {
-    if (cb == null) sync_msg();
-    this.api.getMarketSpot(name, function(err, res) {
-        if (!err) {
-            cb(globals.web3.fromWei(res));
-        }
-    });
+    if (cb == null) {
+        return globals.web3.fromWei(this.api.getMarketSpot(name));
+    } else {
+        this.api.getMarketSpot(name, function(err, res) {
+            if (!err) {
+                cb(globals.web3.fromWei(res));
+            }
+        });
+    }
 };
 
 API.prototype.getUnrealizedCommission = function(name, ctr, cb) {
@@ -1265,8 +1268,9 @@ API.prototype.onNewBlock = function(cb) {
 API.prototype.blackscholes = blackscholes;
 
 API.prototype.setWebAuth = function(str, success, fail) {
-    return this.webauth.set(globals.web3.sha3(str), {gas: 500000}, function(err, res) {
+    return this.webauth.set(globals.web3.sha3(str), {gas: 1000000}, function(err, res) {
         if (!err) {
+            console.log("transaction=" + res);
             globals.pendingTransactions.push({
                 trans: res,
                 cb: success,
