@@ -146,98 +146,98 @@ Contract.prototype.getValues = function(names, cb) {
 Contract.prototype.cbGetCreated = function(cb) {
     if (cb == null) sync_msg();
     this.contract.created(function(err, res) {
-        cb(parseInt(res, 10));
+        if (!err) cb(parseInt(res, 10));
     });
 };
 
 Contract.prototype.cbGetModified = function(cb) {
     if (cb == null) sync_msg();
     this.contract.modified(function(err, res) {
-        cb(parseInt(res, 10));
+        if (!err) cb(parseInt(res, 10));
     });
 };
 
 Contract.prototype.cbGetSupplier = function(cb) {
     if (cb == null) sync_msg();
     this.contract.supplier(function(err, res) {
-        cb(res);
+        if (!err) cb(res);
     });
 };
 
 Contract.prototype.cbGetDemander = function(cb) {
     if (cb == null) sync_msg();
     this.contract.demander(function(err, res) {
-        cb(res);
+        if (!err) cb(res);
     });
 };
 
 Contract.prototype.cbGetMarket = function(cb) {
     if (cb == null) sync_msg();
     this.contract.mid(function(err, res) {
-        cb(globals.web3.toAscii(res).replace(/\u0000/g, ''));
+        if (!err) cb(globals.web3.toAscii(res).replace(/\u0000/g, ''));
     });
 };
 
 Contract.prototype.cbGetBacking = function(cb) {
     if (cb == null) sync_msg();
     this.contract.backing(function(err, res) {
-        cb(globals.web3.fromWei(res));
+        if (!err) cb(globals.web3.fromWei(res));
     });
 };
 
 Contract.prototype.cbGetSpot = function(cb) {
     if (cb == null) sync_msg();
     this.contract.spot(function(err, res) {
-        cb(globals.web3.fromWei(res));
+        if (!err) cb(globals.web3.fromWei(res));
     });
 };
 
 Contract.prototype.cbGetType = function(cb) {
     if (cb == null) sync_msg();
     this.contract.call_put(function(err, res) {
-        cb(res);
+        if (!err) cb(res);
     });
 };
 
 Contract.prototype.cbGetState = function(cb) {
     if (cb == null) sync_msg();
     this.contract.state(function(err, res) {
-        cb(res);
+        if (!err) cb(res);
     });
 };
 
 Contract.prototype.cbGetDuration = function(cb) {
     if (cb == null) sync_msg();
     this.contract.duration(function(err, res) {
-        cb(res);
+        if (!err) cb(res);
     });
 };
 
 Contract.prototype.cbGetPremium = function(cb) {
     if (cb == null) sync_msg();
     this.contract.premium(function(err, res) {
-        cb(globals.web3.fromWei(res));
+        if (!err) cb(globals.web3.fromWei(res));
     });
 };
 
 Contract.prototype.cbGetQuantity = function(cb) {
     if (cb == null) sync_msg();
     this.contract.quantity(function(err, res) {
-        cb(globals.web3.fromWei(res));
+        if (!err) cb(globals.web3.fromWei(res));
     });
 };
 
 Contract.prototype.cbGetStrike = function(cb) {
     if (cb == null) sync_msg();
     this.contract.strike(function(err, res) {
-        cb(globals.web3.fromWei(res));
+        if (!err) cb(globals.web3.fromWei(res));
     });
 };
 
 Contract.prototype.cbGetExpiration = function(cb) {
     if (cb == null) sync_msg();
     this.contract.expiration(function(err, res) {
-        cb(res);
+        if (!err) cb(res);
     });
 };
 
@@ -472,7 +472,6 @@ Contract.prototype.unrealizedCommission = function(cb) {
 Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
     this.contract.tradeMatch(callput, globals.web3.toWei(globals.LONG_AMOUNT), longshort, {gas: 1000000}, function(err, res) {
         if (!err) {
-            console.log("transaction=" + res);
             globals.pendingTransactions.push({
                 trans: res,
                 cb: success,
@@ -488,6 +487,7 @@ Contract.prototype.tradeMatch = function(callput, longshort, success, fail) {
 Contract.prototype.tradeEnd = function(success, fail) {
     this.contract.tradeEnd({gas: 2000000}, function(err, res) {
         if (!err) {
+            //console.log("transaction=" + res);
             globals.pendingTransactions.push({
                 trans: res,
                 cb: success,
@@ -555,6 +555,18 @@ ContractList.prototype.numContracts = function(cb) {
     }
 };
 
+ContractList.prototype.iterFirst = function(cb) {
+    if (cb == null) {
+        return new Contract(this.list.iterFirst());
+    } else {
+        this.list.iterFirst(function(err, res) {
+            if (!err) {
+                cb(new Contract(res));
+            }
+        });
+    }
+};
+
 // API
 
 var API = function(cb) {
@@ -569,7 +581,7 @@ API.prototype.verifyIncludedTx = function(hash) {
     var gasUsed = 0;
     var p1 = new Promise(function(resolve, reject) {
         globals.web3.eth.getTransaction(hash, function(err, res) {
-            if (err) {
+            if (err && !res) {
                 reject();
             } else {
                 //console.log("transaction=" + JSON.stringify(res));
@@ -580,7 +592,7 @@ API.prototype.verifyIncludedTx = function(hash) {
     });
     var p2 = new Promise(function(resolve, reject) {
         globals.web3.eth.getTransactionReceipt(hash, function(err, res) {
-            if (err) {
+            if (err && !res) {
                 reject();
             } else {
                 //console.log("receipt=" + JSON.stringify(res));
@@ -1089,6 +1101,7 @@ API.prototype.createContract = function(name, price, dur, vol, success, fail) {
     this.api.createContract(name, globals.web3.toWei(globals.SHORT_AMOUNT), globals.web3.toWei(price), 
         dur, cw, pw, {gas: 3000000}, function(err, res) {
         if (!err) {
+            //console.log("transaction=" + res);
             globals.pendingTransactions.push({
                 trans: res,
                 cb: success,
@@ -1096,6 +1109,7 @@ API.prototype.createContract = function(name, price, dur, vol, success, fail) {
                 msg: "Contract created"
             });
         } else {
+            console.log("err=" + err.message);
             if (fail != null) fail(err.message);
         }
     });
@@ -1270,7 +1284,6 @@ API.prototype.blackscholes = blackscholes;
 API.prototype.setWebAuth = function(str, success, fail) {
     return this.webauth.set(globals.web3.sha3(str), {gas: 1000000}, function(err, res) {
         if (!err) {
-            console.log("transaction=" + res);
             globals.pendingTransactions.push({
                 trans: res,
                 cb: success,
