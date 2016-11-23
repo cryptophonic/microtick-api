@@ -581,7 +581,7 @@ API.prototype.verifyIncludedTx = function(hash) {
     var gasUsed = 0;
     var p1 = new Promise(function(resolve, reject) {
         globals.web3.eth.getTransaction(hash, function(err, res) {
-            if (err && !res) {
+            if (err || !res) {
                 reject();
             } else {
                 //console.log("transaction=" + JSON.stringify(res));
@@ -592,7 +592,7 @@ API.prototype.verifyIncludedTx = function(hash) {
     });
     var p2 = new Promise(function(resolve, reject) {
         globals.web3.eth.getTransactionReceipt(hash, function(err, res) {
-            if (err && !res) {
+            if (err || !res) {
                 reject();
             } else {
                 //console.log("receipt=" + JSON.stringify(res));
