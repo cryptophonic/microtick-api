@@ -418,7 +418,7 @@ Contract.prototype.isDone = function() {
 };
 
 Contract.prototype.updateContractSpot = function(price, success, fail) {
-    this.contract.updateContractSpot(globals.web3.toWei(price), {gas: 250000}, function(err, res) {
+    this.contract.updateContractSpot(globals.web3.toWei(price), {gas: 1000000}, function(err, res) {
         if (!err) {
             globals.pendingTransactions.push({
                 trans: res,
